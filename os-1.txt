@@ -1,0 +1,147 @@
+1.SENDER :
+#include <stdio.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+
+int main() {
+
+    int shmid = shmget(1234, 1024, 0666 | IPC_CREAT);
+
+    char *str = (char*) shmat(shmid, NULL, 0);
+
+    printf("Enter message: ");
+    scanf(" %[^\n]", str);
+
+    printf("Message Sent: %s\n", str);
+
+    return 0;
+}
+
+2.RECEIVER:
+#include <stdio.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+
+int main() {
+
+    int shmid = shmget(1234, 1024, 0666);
+
+    char *str = (char*) shmat(shmid, NULL, 0);
+
+    printf("Received Message: %s\n", str);
+
+    shmdt(str);
+
+    return 0;
+}
+
+3.PRODUCER CONSUMER:
+#include <stdio.h>
+
+int main() {
+
+    int full=0, empty=5, x=0, ch;
+
+    while(1) {
+
+        printf("\n1. Produce\n2. Consume\n3. Exit\n");
+        scanf("%d",&ch);
+
+        if(ch==1) {
+
+            if(empty>0) {
+
+                x++;
+                full++;
+                empty--;
+
+                printf("Produced Item %d\n",x);
+            }
+
+            else
+                printf("Buffer Full\n");
+        }
+
+        else if(ch==2) {
+
+            if(full>0) {
+
+                printf("Consumed Item %d\n",x);
+
+                x--;
+                full--;
+                empty++;
+            }
+
+            else
+                printf("Buffer Empty\n");
+        }
+
+        else
+            break;
+    }
+
+    return 0;
+}
+
+SHELL SCRIPT:
+1.echo "Enter a number:"
+read num
+rev=0
+
+while [ $num -gt 0 ]
+do
+  rem=$((num % 10))
+  rev=$((rev * 10 + rem))
+  num=$((num / 10))
+done
+
+echo "Reversed number: $rev"
+
+2.For palindrome use temp and then rev then if else 
+3.echo "Enter limit:"
+read n
+
+a=0
+b=1
+
+echo "Fibonacci Series:"
+for ((i=0; i<n; i++))
+do
+  echo -n "$a "
+  temp=$((a + b))
+  a=$b
+  b=$temp
+done
+
+4.echo "Enter number:"
+read num
+temp=$num
+sum=0
+
+while [ $num -gt 0 ]
+do
+  rem=$((num % 10))
+  sum=$((sum + rem * rem * rem))
+  num=$((num / 10))
+done
+
+if [ $temp -eq $sum ]
+then
+  echo "Armstrong Number"
+else
+  echo "Not Armstrong"
+fi
+
+5.echo "Enter number:"
+read num
+sum=0
+
+while [ $num -gt 0 ]
+do
+  rem=$((num % 10))
+  sum=$((sum + rem))
+  num=$((num / 10))
+done
+
+echo "Sum of digits: $sum"
